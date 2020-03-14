@@ -13,7 +13,6 @@
 #include <media/stagefright/foundation/ALooper.h>
 #include <media/stagefright/foundation/AMessage.h>
 #include <media/stagefright/foundation/AString.h>
-#include <media/stagefright/DataSource.h>
 #include <media/stagefright/MediaCodec.h>
 #include <media/stagefright/MediaCodecList.h>
 #include <media/stagefright/MediaDefs.h>
@@ -21,6 +20,12 @@
 #include <gui/SurfaceComposerClient.h>
 #include <gui/Surface.h>
 #include <ui/DisplayInfo.h>
+
+#ifdef AVS90
+#include <media/MediaCodecBuffer.h>
+#else
+#include <media/stagefright/DataSource.h>
+#endif
 
 #define BG_WIDTH 1280
 #define BG_HEIGHT 720
@@ -40,8 +45,13 @@ class AVCPlayer{
         void Dispose();
 
         sp<MediaCodec> mCodec;
+#ifndef AVS90
         Vector<sp<ABuffer> > mInBuffers;
         Vector<sp<ABuffer> > mOutBuffers;
+#else
+        Vector<sp<MediaCodecBuffer> > mInBuffers;
+        Vector<sp<MediaCodecBuffer> > mOutBuffers;
+#endif
         sp<SurfaceComposerClient> mComposerClient;
         sp<SurfaceControl> mControl;
         sp<SurfaceControl> mControlBG;

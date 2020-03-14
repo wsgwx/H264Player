@@ -7,6 +7,7 @@
 
 int main(int argc, char **argv)
 {
+    UNUSED(argc);
     if(!argv[1]){
         printf(">>>Filepath is NULL\n");
         printf(">>>For example: AVCPlayer xxx.h264\n");

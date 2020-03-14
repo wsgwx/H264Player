@@ -19,16 +19,20 @@ LOCAL_SRC_FILES := \
 	src/AVCBuffer.cpp \
         main.cpp
 LOCAL_SHARED_LIBRARIES := \
-	libstagefright libmedia libutils libbinder libstagefright_foundation \
-	libgui libcutils liblog libEGL libGLESv2
+	libstagefright libmedia libmedia_omx libutils libbinder libstagefright_foundation \
+	libgui libui libcutils liblog libEGL libGLESv2
 
 LOCAL_C_INCLUDES := \
 	frameworks/av/media/libstagefright \
 	frameworks/av/media/libstagefright/include \
 	$(TOP)/frameworks/native/include/media/openmax \
 
-LOCAL_CFLAGS += -Wno-multichar
+LOCAL_CFLAGS += -Wno-multichar -Werror -Wall
 #LOCAL_CFLAGS += -UNDEBUG
+
+ifeq ($(PLATFORM_VERSION), 9)
+    LOCAL_CFLAGS += -DAVS90
+endif
 
 LOCAL_MODULE_TAGS := optional
 

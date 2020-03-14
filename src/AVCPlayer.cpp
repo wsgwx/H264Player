@@ -8,8 +8,9 @@ int AVCPlayer::InitPlayer()
     mRendering = true;
 
     ProcessState::self()->startThreadPool();
+#ifndef AVS90
     DataSource::RegisterDefaultSniffers();
-
+#endif
     mFormat = new AMessage;
     mLooper = new ALooper;
     mLooper->start();
@@ -25,12 +26,19 @@ int AVCPlayer::InitPlayer()
         0);
     CHECK(mControl != NULL);
     CHECK(mControl->isValid());
-    
+
+#ifndef AVS90
     SurfaceComposerClient::openGlobalTransaction();
     CHECK_EQ(mControl->setLayer(INT_MAX), (status_t)OK);
     CHECK_EQ(mControl->show(), (status_t)OK);
-    
     SurfaceComposerClient::closeGlobalTransaction();
+#else
+    SurfaceComposerClient::Transaction{}
+        .setLayer(mControl, INT_MAX)
+        .show(mControl)
+        .apply();
+#endif
+
     mSurface = mControl->getSurface();
     CHECK(mSurface != NULL);
 
@@ -55,10 +63,17 @@ void AVCPlayer::GetBackground()
     CHECK(mControlBG != NULL);
     CHECK(mControlBG->isValid());
 
+#ifndef AVS90
     SurfaceComposerClient::openGlobalTransaction();
     CHECK_EQ(mControlBG->setLayer(INT_MAX - 1), (status_t)OK);
     CHECK_EQ(mControlBG->show(), (status_t)OK);
     SurfaceComposerClient::closeGlobalTransaction();
+#else
+    SurfaceComposerClient::Transaction{}
+        .setLayer(mControlBG, INT_MAX - 1)
+        .show(mControlBG)
+        .apply();
+#endif
 
     sp<Surface> surface = mControlBG->getSurface();
     CHECK(surface != NULL);
@@ -125,10 +140,18 @@ void AVCPlayer::Scale()
                 int x = (BG_WIDTH - width) / 2;
                 int y = (BG_HEIGHT - height) / 2;
 
+
+#ifndef AVS90
                 SurfaceComposerClient::openGlobalTransaction();
                 mControl->setSize(width, height);
                 mControl->setPosition(x, y);
                 SurfaceComposerClient::closeGlobalTransaction();
+#else
+                SurfaceComposerClient::Transaction{}
+                        .setSize(mControl, width,height)
+                        .setPosition(mControl, x, y)
+                        .apply();
+#endif
             }
         }
 }
@@ -173,9 +196,12 @@ int AVCPlayer::FeedOneNALU(unsigned char* buffer, int size)
     int err = mCodec->dequeueInputBuffer(&index, -1ll);
     CHECK_EQ(err, (status_t)OK);
 
+#ifdef AVS90
+    const sp<MediaCodecBuffer> &dst = mInBuffers.itemAt(index);
+#else
     const sp<ABuffer> &dst = mInBuffers.itemAt(index);
-
     CHECK_LE(size, dst->capacity());
+#endif
 
     dst->setRange(0, size);
     memcpy(dst->data(), buffer, size);
@@ -198,11 +224,12 @@ void AVCPlayer::Dispose()
     mLooper->stop();
 
     mRendering = false;
+#ifndef AVS90
     SurfaceComposerClient::openGlobalTransaction();
     CHECK_EQ(mControl->hide(), (status_t)OK);
     CHECK_EQ(mControlBG->hide(), (status_t)OK);
     SurfaceComposerClient::closeGlobalTransaction();
-
+#endif
     mComposerClient->dispose();
     mControl->clear();
     mControlBG->clear();
