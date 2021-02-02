@@ -30,9 +30,14 @@ LOCAL_C_INCLUDES := \
 LOCAL_CFLAGS += -Wno-multichar -Werror -Wall
 #LOCAL_CFLAGS += -UNDEBUG
 
-ifeq ($(PLATFORM_VERSION), 9)
+ifeq (1,$(strip $(shell expr $(PLATFORM_VERSION) \>= 9.0)))
     LOCAL_CFLAGS += -DAVS90
 endif
+
+ifeq ($(PLATFORM_VERSION), 10)
+    LOCAL_CFLAGS += -DAVS10
+endif
+
 
 LOCAL_MODULE_TAGS := optional
 

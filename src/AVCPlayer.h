@@ -56,7 +56,11 @@ class AVCPlayer{
         sp<SurfaceControl> mControl;
         sp<SurfaceControl> mControlBG;
         sp<Surface> mSurface;
-        sp<ALooper> mLooper;
+#ifdef AVS10
+    sp<android::ALooper> mLooper;
+#else
+    sp<ALooper> mLooper;
+#endif
         sp<AMessage> mFormat;
     private:
         int mWidth;

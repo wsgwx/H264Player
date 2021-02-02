@@ -12,7 +12,11 @@ int AVCPlayer::InitPlayer()
     DataSource::RegisterDefaultSniffers();
 #endif
     mFormat = new AMessage;
+#ifdef AVS10
+    mLooper = new android::ALooper;
+#else
     mLooper = new ALooper;
+#endif
     mLooper->start();
 
     mComposerClient = new SurfaceComposerClient;
@@ -231,6 +235,8 @@ void AVCPlayer::Dispose()
     SurfaceComposerClient::closeGlobalTransaction();
 #endif
     mComposerClient->dispose();
+#ifndef AVS10
     mControl->clear();
     mControlBG->clear();
+#endif
 }
