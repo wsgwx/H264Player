@@ -7,7 +7,7 @@
 
 #include <binder/IServiceManager.h>
 #include <binder/ProcessState.h>
-#include <media/ICrypto.h>
+#include <mediadrm/ICrypto.h>
 #include <media/stagefright/foundation/ABuffer.h>
 #include <media/stagefright/foundation/ADebug.h>
 #include <media/stagefright/foundation/ALooper.h>

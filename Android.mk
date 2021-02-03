@@ -14,13 +14,25 @@ LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
 
+ifeq (1,$(strip $(shell expr $(PLATFORM_SDK_VERSION) \>= 28)))
+    LOCAL_CFLAGS += -DAVS90
+endif
+
+ifeq (1,$(strip $(shell expr $(PLATFORM_SDK_VERSION) \>= 29)))
+    LOCAL_CFLAGS += -DAVS10
+endif
+
 LOCAL_SRC_FILES := \
 	src/AVCPlayer.cpp \
 	src/AVCBuffer.cpp \
         main.cpp
 LOCAL_SHARED_LIBRARIES := \
-	libstagefright libmedia libmedia_omx libutils libbinder libstagefright_foundation \
+	libstagefright libmedia libmediadrm libmedia_omx libutils libbinder libstagefright_foundation \
 	libgui libui libcutils liblog libEGL libGLESv2
+
+LOCAL_HEADER_LIBRARIES := \
+            libmediadrm_headers \
+	    libmediametrics_headers \
 
 LOCAL_C_INCLUDES := \
 	frameworks/av/media/libstagefright \
@@ -29,14 +41,6 @@ LOCAL_C_INCLUDES := \
 
 LOCAL_CFLAGS += -Wno-multichar -Werror -Wall
 #LOCAL_CFLAGS += -UNDEBUG
-
-ifeq (1,$(strip $(shell expr $(PLATFORM_VERSION) \>= 9.0)))
-    LOCAL_CFLAGS += -DAVS90
-endif
-
-ifeq ($(PLATFORM_VERSION), 10)
-    LOCAL_CFLAGS += -DAVS10
-endif
 
 
 LOCAL_MODULE_TAGS := optional
