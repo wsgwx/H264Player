@@ -20,6 +20,10 @@ endif
 
 ifeq (1,$(strip $(shell expr $(PLATFORM_SDK_VERSION) \>= 29)))
     LOCAL_CFLAGS += -DAVS10
+    LOCAL_HEADER_LIBRARIES := \
+            libmediadrm_headers \
+	    libmediametrics_headers \
+
 endif
 
 LOCAL_SRC_FILES := \
@@ -27,12 +31,8 @@ LOCAL_SRC_FILES := \
 	src/AVCBuffer.cpp \
         main.cpp
 LOCAL_SHARED_LIBRARIES := \
-	libstagefright libmedia libmediadrm libmedia_omx libutils libbinder libstagefright_foundation \
+	libstagefright libmedia libmedia_omx libutils libbinder libstagefright_foundation \
 	libgui libui libcutils liblog libEGL libGLESv2
-
-LOCAL_HEADER_LIBRARIES := \
-            libmediadrm_headers \
-	    libmediametrics_headers \
 
 LOCAL_C_INCLUDES := \
 	frameworks/av/media/libstagefright \
