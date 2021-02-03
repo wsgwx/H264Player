@@ -20,6 +20,10 @@ endif
 
 ifeq (1,$(strip $(shell expr $(PLATFORM_SDK_VERSION) \>= 29)))
     LOCAL_CFLAGS += -DAVS10
+endif
+
+ifeq (1,$(strip $(shell expr $(PLATFORM_SDK_VERSION) \>= 30)))
+    LOCAL_CFLAGS += -DAVS11
     LOCAL_HEADER_LIBRARIES := \
             libmediadrm_headers \
 	    libmediametrics_headers \
